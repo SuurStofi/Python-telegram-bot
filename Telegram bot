@@ -1,0 +1,44 @@
+import random
+import telegram
+from telegram.ext import Updater, CommandHandler
+from io import BytesIO
+
+
+TOKEN = '6194604919:AAHXbPzO446-rl80xV1m2EUWYa4yq9SsA70'
+
+def generate_pin():
+    while True:
+        pin = random.randint(0, 9999)
+        if len(str(pin)) == 4:
+            return pin
+
+
+def pin_command(update, context):
+
+    pin = generate_pin()
+
+    update.message.reply_text(f'Your pin code is: {pin}')
+
+
+def code_command(update, context):
+
+    code_file = BytesIO()
+
+    code_file.write(b"print('Hello, world!')")
+
+    code_file.seek(0)
+
+    update.message.reply_document(document=code_file, filename='my_code.py')
+
+
+updater = Updater(TOKEN, use_context=True)
+
+
+updater.dispatcher.add_handler(CommandHandler('pin', pin_command))
+
+
+updater.dispatcher.add_handler(CommandHandler('code', code_command))
+
+
+updater.start_polling()
+updater.idle()
